@@ -1,33 +1,59 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <title>Blog</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-    Категорії
-    {% if categories %}
-        {% for item in categories %}
-        <div>
-            <a href="{{ item.get_absolute_url }}">
-               <h4>{{ item.category }}</h4>
-            </a>
-        </div>
-        {% endfor %}
-    {% endif %}
+{% extends "base.html" %}
+{% load static %}
 
-    {% if articles %}
-        {% for item in articles %}
-        <div>
-            <a href="{{ item.get_absolute_url }}">
-               <h4>{{ item.title }}</h4>
-            </a>
-            <h5>{{ item.pub_date|date:"j E Y"|safe|linebreaks }}</h5>
-            <p>{{ item.description|safe|escape|striptags|truncatewords_html:32 }}</p>
-        </div>
-        {% endfor %}
-    {% endif %}
+{% block content %}
     
-    <a href="{% url 'articles-list' %}"><h4>Всі публікації</h4></a>
-</body>
-</html>
+    <div class="hero-banner mb-5 position-relative text-center">
+        <img src="{% static 'img/bg-cyber.jpg' %}" alt="Main Banner" style="width: 100%; height: 400px; object-fit: cover; border-radius: 15px; border: 2px solid #FFF200; box-shadow: 0 0 20px rgba(255, 242, 0, 0.4);">
+        
+        <div class="hero-text position-absolute" style="bottom: 20px; left: 20px; background: rgba(0,0,0,0.7); padding: 15px 30px; border-left: 5px solid #FFF200;">
+            <h1 style="color: #FFF200; text-shadow: none; margin: 0; font-size: 3rem; text-align: left;">НОВИНИ КІБЕРСПОРТУ</h1>
+        </div>
+    </div>
+
+    <div class="row">
+        {% if articles %}
+            {% for item in articles %}
+            <div class="col-md-12">
+                <div class="article-block">
+                    <div class="row">
+                        {% if item.images.all %}
+                        <div class="col-md-4 container-image">
+                            <img src="{{ item.images.all.0.image.url }}" alt="">
+                        </div>
+                        <div class="col-md-8">
+                            <a href="{{ item.get_absolute_url }}">
+                                <h4>{{ item.title }}</h4>
+                            </a>
+                            <h6 class="text-muted">
+                                {{ item.pub_date|date:"j E Y" }}
+                            </h6>
+                            <p>
+                                {{ item.description|safe|striptags|truncatewords_html:35 }}
+                            </p>
+                        </div>
+                        {% else %}
+                        <div class="col-md-12">
+                            <a href="{{ item.get_absolute_url }}">
+                                <h4>{{ item.title }}</h4>
+                            </a>
+                            <h6 class="text-muted">
+                                {{ item.pub_date|date:"j E Y" }}
+                            </h6>
+                            <p>
+                                {{ item.description|safe|striptags|truncatewords_html:50 }}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+        <a href="{% url 'articles-list' %}" class="btn btn-info btn-lg">ЧИТАТИ ВСІ НОВИНИ</a>
+    </div>
+
+{% endblock %}

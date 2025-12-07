@@ -1,34 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Публікації</title>
-</head>
-<body>
-    Публікації <br/>
+{% extends "base.html" %}
+{% load static %}
 
-    {% if category %} {{ category }} {% endif %}
+{% block content %}
+    <h1>НОВИНИ КІБЕРСПОРТУ</h1>
+    
+    {% if category %} 
+        <h3>Категорія: {{ category }}</h3> 
+    {% endif %}
 
-    {% for item in items %}
-    <div class="articles-row">
-
-    <a href="{{ item.get_absolute_url }}">
-     <h4>{{ item.title }}</h4>
-    </a>
-
-    <h5>
-    {{ item.pub_date|date:"j E Y"|safe|linebreaks }}
-    </h5>
-
-    <p>
-    {{ item.description|safe|escape|striptags|truncatewords_html:32 }}
-    </p>
-
-    <div class="container-image">
-        <img class="img" src="{{ item.images.all.0.image.url }}" alt="" />
+    <div class="row mt-4">
+        {% for item in items %}
+        <div class="col-md-12">
+            <div class="article-block">
+                <a href="{{ item.get_absolute_url }}">
+                    <h4>{{ item.title }}</h4>
+                </a>
+                <h6 class="text-muted">
+                    {{ item.pub_date|date:"j E Y" }}
+                </h6>
+                
+                <div class="row">
+                    {% if item.images.all %}
+                    <div class="col-md-4 container-image">
+                        <img src="{{ item.images.all.0.image.url }}" alt="">
+                    </div>
+                    <div class="col-md-8">
+                        {{ item.description|safe|striptags|truncatewords_html:32 }}
+                    </div>
+                    {% else %}
+                    <div class="col-md-12">
+                        {{ item.description|safe|striptags|truncatewords_html:50 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
     </div>
-    <div class='clearfix'></div>
-    </div>
-    {% endfor %}
-</body>
-</html>
+{% endblock %}
